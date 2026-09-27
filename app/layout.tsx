@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'The Travel Point | Simple bus booking',
+  description: 'Book comfortable bus journeys across India with clear prices and trusted operators.',
   generator: 'v0.app',
   icons: {
     icon: [
