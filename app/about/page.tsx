@@ -60,7 +60,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#fff6f6]">
+      <section className="bg-[#fff9e6]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:px-8 lg:py-24">
           <div data-reveal className="relative h-80 overflow-hidden rounded-3xl sm:h-[430px]"><Image src="/bus-interior.png" alt="Clean and comfortable bus interior" fill className="object-cover" /></div>
           <div data-reveal><p className="text-sm font-bold uppercase tracking-[0.2em] text-[#d71920]">Our promise</p><h2 className="mt-3 text-3xl font-black sm:text-4xl">Travel with confidence, every time.</h2><p className="mt-5 leading-8 text-slate-600">The Travel Point brings together the things that matter on the road: reliable schedules, comfortable seats, transparent fares, and help when you need it.</p><div className="mt-7 grid gap-4 sm:grid-cols-2"><div className="flex gap-3"><Wifi className="mt-1 shrink-0 text-[#d71920]" /><p><strong>Thoughtful comfort</strong><br /><span className="text-slate-600">Amenities that make longer routes easier.</span></p></div><div className="flex gap-3"><Users className="mt-1 shrink-0 text-[#d71920]" /><p><strong>People-powered support</strong><br /><span className="text-slate-600">Real help from a team that listens.</span></p></div><div className="flex gap-3"><MapPin className="mt-1 shrink-0 text-[#d71920]" /><p><strong>Routes that connect</strong><br /><span className="text-slate-600">Go further across the places you love.</span></p></div></div></div>
