@@ -40,8 +40,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased max-md:pb-28">
-        {children}
+      <body className="antialiased">
+        <div className="max-md:hidden">{children}</div>
         <AppDownloadBanner />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

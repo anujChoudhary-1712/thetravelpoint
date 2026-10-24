@@ -57,6 +57,7 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
+  a[href], button:not(:disabled), [role='button'], select, summary, label, input[type='checkbox'], input[type='radio'], input[type='date'] { cursor: pointer; }
 }
 
 input::placeholder, textarea::placeholder { color: #64748b; opacity: 1; }
