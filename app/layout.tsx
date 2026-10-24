@@ -1,11 +1,11 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { AppDownloadBanner } from '@/components/app-download-banner'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'The Travel Point | Simple bus booking',
   description: 'Book comfortable bus journeys across India with clear prices and trusted operators.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
@@ -40,8 +40,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased max-md:pb-28">
         {children}
+        <AppDownloadBanner />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

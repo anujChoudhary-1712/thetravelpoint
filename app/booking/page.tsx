@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { ArrowRight, BusFront, Check, Clock3, Filter, MapPin, ShieldCheck, Star } from 'lucide-react'
 import { Footer, SiteHeader } from '@/components/site-header'
 
@@ -13,7 +14,20 @@ const buses = [
 const seats = Array.from({ length: 32 }, (_, index) => index + 1)
 const unavailableSeats = new Set([2, 5, 11, 14, 19, 22, 28, 31])
 
+function formatDate(value: string | null) {
+  const date = value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(`${value}T00:00:00`) : null
+  return date && !Number.isNaN(date.getTime()) ? date.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : null
+}
+
 export default function BookingPage() {
+  return <Suspense><BookingContent /></Suspense>
+}
+
+function BookingContent() {
+  const params = useSearchParams()
+  const from = params.get('from') || 'Jaipur'
+  const to = params.get('to') || 'Delhi'
+  const dateLabel = formatDate(params.get('date'))
   const [selectedBus, setSelectedBus] = useState<number | null>(null)
   const [selectedSeats, setSelectedSeats] = useState<number[]>([])
   const [showFilters, setShowFilters] = useState(false)
@@ -39,8 +53,8 @@ export default function BookingPage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d71920]">Search results</p>
-              <h1 className="mt-1 text-2xl font-black text-[#111111] sm:text-3xl">Jaipur <span className="text-[#d71920]">→</span> Delhi</h1>
-              <p className="mt-1 text-sm text-[#555555]">Sunday, 27 September 2026 · 3 buses available</p>
+              <h1 className="mt-1 text-2xl font-black text-[#111111] sm:text-3xl">{from} <span className="text-[#d71920]">→</span> {to}</h1>
+              <p className="mt-1 text-sm text-[#555555]">{dateLabel ? `${dateLabel} · ` : ''}{buses.length} buses available</p>
             </div>
             <button type="button" onClick={() => setShowFilters((value) => !value)} className="inline-flex items-center gap-2 rounded-lg border border-[#cfcfcf] bg-white px-4 py-2 text-sm font-bold text-[#111111] lg:hidden">
               <Filter className="size-4 text-[#d71920]" aria-hidden="true" /> Filters
@@ -65,7 +79,7 @@ export default function BookingPage() {
               <div className="grid gap-5 p-5 md:grid-cols-[1fr_auto] md:items-center">
                 <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
                   <div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-full bg-[#fff1f1]"><BusFront className="size-5 text-[#d71920]" aria-hidden="true" /></div><div><p className="font-bold text-[#111111]">The Travel Point</p><p className="text-xs text-[#666666]">{item.type}</p></div></div>
-                  <div><p className="text-lg font-black text-[#111111]">{item.departure}</p><p className="text-xs text-[#666666]">Jaipur</p></div><div className="flex min-w-24 items-center gap-2 text-xs text-[#777777]"><span className="h-px flex-1 bg-[#d9d9d9]" /><Clock3 className="size-4" aria-hidden="true" /><span>{item.duration}</span><span className="h-px flex-1 bg-[#d9d9d9]" /></div><div><p className="text-lg font-black text-[#111111]">{item.arrival}</p><p className="text-xs text-[#666666]">Delhi</p></div>
+                  <div><p className="text-lg font-black text-[#111111]">{item.departure}</p><p className="text-xs text-[#666666]">{from}</p></div><div className="flex min-w-24 items-center gap-2 text-xs text-[#777777]"><span className="h-px flex-1 bg-[#d9d9d9]" /><Clock3 className="size-4" aria-hidden="true" /><span>{item.duration}</span><span className="h-px flex-1 bg-[#d9d9d9]" /></div><div><p className="text-lg font-black text-[#111111]">{item.arrival}</p><p className="text-xs text-[#666666]">{to}</p></div>
                   <div className="flex items-center gap-1 rounded bg-[#eef8ee] px-2 py-1 text-xs font-bold text-[#27712b]"><Star className="size-3 fill-current" aria-hidden="true" /> {item.rating}</div>
                 </div>
                 <div className="flex items-center justify-between gap-5 md:justify-end"><div><p className="text-xs text-[#777777]">Starting from</p><p className="text-xl font-black text-[#111111]">₹{item.price}</p></div><button type="button" onClick={() => chooseBus(item.id)} className="inline-flex items-center gap-2 rounded-lg bg-[#d71920] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#b9141a]">{isSelected ? 'Seats selected' : 'View seats'} <ArrowRight className="size-4" aria-hidden="true" /></button></div>

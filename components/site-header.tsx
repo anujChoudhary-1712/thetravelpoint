@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { BusFront, Headphones, Menu, UserRound } from 'lucide-react'
+import { BusFront, Headphones, Menu, UserRound, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function SiteHeader() {
+  const [open, setOpen] = useState(false)
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
@@ -20,9 +22,10 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <a href="tel:+911144446900" className="hidden items-center gap-2 text-sm font-semibold text-slate-600 lg:flex"><Headphones className="size-4 text-[#d71920]" aria-hidden="true" /> 24/7 support</a>
           <Link href="/signin"><Button className="hidden rounded-lg bg-[#111111] text-white hover:bg-[#d71920] md:flex"><UserRound data-icon="inline-start" />Sign in</Button></Link>
-          <Button size="icon" variant="ghost" className="md:hidden" aria-label="Open menu"><Menu /></Button>
+          <Button size="icon" variant="ghost" className="md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((v) => !v)}>{open ? <X /> : <Menu />}</Button>
         </div>
       </div>
+      {open && <nav className="flex flex-col gap-1 border-t border-slate-200 px-5 py-3 text-sm font-bold md:hidden" aria-label="Mobile navigation">{[['/', 'Home'], ['/about', 'About us'], ['/contact', 'Contact'], ['/signin', 'Sign in']].map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-slate-700 hover:bg-slate-50 hover:text-[#d71920]">{label}</Link>)}</nav>}
     </header>
   )
 }
