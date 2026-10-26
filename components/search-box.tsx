@@ -7,10 +7,27 @@ import { Button } from '@/components/ui/button'
 
 const cities = ['Jaipur', 'Delhi', 'Ajmer', 'Udaipur', 'Jodhpur', 'Kota']
 
+const labelClass = 'flex flex-col gap-2 px-1 text-xs font-bold uppercase tracking-wide text-slate-600'
+// The control itself fills the whole box so a click anywhere on it works, not just on the text or arrow.
+const controlClass = 'h-12 w-full appearance-none rounded-lg border border-slate-300 bg-white pl-10 pr-9 text-sm font-semibold normal-case text-[#111111] outline-none transition-colors hover:border-[#d71920]/60 focus:border-[#d71920] focus:ring-2 focus:ring-[#d71920]/20'
+const iconClass = 'pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#d71920]'
+
+function CitySelect({ name, label, defaultValue }: { name: string; label: string; defaultValue: string }) {
+  return <label className={labelClass}>{label}
+    <div className="relative">
+      <MapPin className={iconClass} aria-hidden="true" />
+      <select name={name} className={controlClass} defaultValue={defaultValue}>{cities.map((city) => <option key={city}>{city}</option>)}</select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+    </div>
+  </label>
+}
+
 export function SearchBox() {
   const router = useRouter()
-  const [today, setToday] = useState('')
+  const [tomorrow, setTomorrow] = useState('')
   const [error, setError] = useState('')
+  useEffect(() => { const d = new Date(); d.setDate(d.getDate() + 1); setTomorrow(d.toLocaleDateString('en-CA')) }, [])
+
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -19,13 +36,19 @@ export function SearchBox() {
     setError('')
     router.push(`/booking?${new URLSearchParams({ from, to, date })}`)
   }
-  useEffect(() => { const d = new Date(); d.setDate(d.getDate() + 1); setToday(d.toLocaleDateString('en-CA')) }, [])
+
   return <form onSubmit={onSubmit} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-900/10 md:grid-cols-[1fr_auto_1fr_1fr_auto] md:items-end md:gap-2" aria-label="Search buses">
-    <label className="flex flex-col gap-2 px-1 text-xs font-bold uppercase tracking-wide text-slate-600">From<div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold normal-case text-[#111111]"><MapPin className="text-[#d71920]" aria-hidden="true" /><select name="from" className="w-full bg-transparent outline-none" defaultValue="Jaipur">{cities.map((city) => <option key={city}>{city}</option>)}</select><ChevronDown className="size-4 text-slate-500" aria-hidden="true" /></div></label>
-    <ArrowRight className="mx-auto hidden text-[#d71920] md:mb-3 md:block" aria-hidden="true" />
-    <label className="flex flex-col gap-2 px-1 text-xs font-bold uppercase tracking-wide text-slate-600">To<div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold normal-case text-[#111111]"><MapPin className="text-[#d71920]" aria-hidden="true" /><select name="to" className="w-full bg-transparent outline-none" defaultValue="Delhi">{cities.map((city) => <option key={city}>{city}</option>)}</select><ChevronDown className="size-4 text-slate-500" aria-hidden="true" /></div></label>
-    <label className="flex flex-col gap-2 px-1 text-xs font-bold uppercase tracking-wide text-slate-600">Departure date<div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold normal-case text-[#111111]"><CalendarDays className="text-[#d71920]" aria-hidden="true" /><input name="date" className="w-full bg-transparent outline-none" type="date" key={today} min={today} defaultValue={today} required /></div></label>
-    <Button type="submit" className="h-12 rounded-lg bg-[#d71920] px-6 font-bold text-white hover:bg-[#b51218]"><Search data-icon="inline-start" />Search buses</Button>
-  {error && <p role="alert" className="px-1 text-sm font-semibold text-[#d71920] md:col-span-5">{error}</p>}
+    <CitySelect name="from" label="From" defaultValue="Jaipur" />
+    <ArrowRight className="mx-auto hidden text-[#d71920] md:mb-3.5 md:block" aria-hidden="true" />
+    <CitySelect name="to" label="To" defaultValue="Delhi" />
+    <label className={labelClass}>Departure date
+      <div className="relative">
+        <CalendarDays className={iconClass} aria-hidden="true" />
+        <input name="date" type="date" key={tomorrow} min={tomorrow} defaultValue={tomorrow} required className={controlClass.replace('appearance-none ', '') + ' pr-3'}
+          onClick={(e) => { try { e.currentTarget.showPicker() } catch {} }} />
+      </div>
+    </label>
+    <Button type="submit" className="h-12 w-full rounded-lg bg-[#d71920] px-6 text-base font-bold text-white hover:bg-[#b51218] md:w-auto"><Search data-icon="inline-start" />Search buses</Button>
+    {error && <p role="alert" className="px-1 text-sm font-semibold text-[#d71920] md:col-span-5">{error}</p>}
   </form>
 }
